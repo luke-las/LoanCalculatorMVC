@@ -1,0 +1,87 @@
+﻿@*
+For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model LoanCalculatorMVC.Models.Loan
+<div class="container">
+    <div class="row">
+        <div class="col border">
+            <form asp-controller="Home" asp-action="LCPage" method="post">
+                <div class="form-group col-12 mt-4">
+                    <label asp-for="Amount">Loan Amount: </label>
+                    <input asp-for="Amount" type="number" id="lbalance" class="form-control" value="@Model.Amount" min="1000" step="500">
+                </div>
+                <div class="form-group col-12">
+                    <label asp-for="Term">Loan Term: </label>
+                    <input asp-for="Term" type="number" id="lterm" class="form-control" value="@Model.Term" min="1">
+                </div>
+                <div class="form-group col-12">
+                    <label asp-for="Rate">Interest Rate: </label>
+                    <input asp-for="Rate" type="number" step=".1" id="lrate" class="form-control" value="@Model.Rate" min="1">
+                </div>
+                <div class="d-flex flex-row-reverse">
+                    <button type="submit" class="btn btn-secondary mb-4">Calculate</button>
+                </div>
+            </form>
+        </div>
+        <div class="col border">
+            <div id="paymentTitle">
+                <p>Your Monthly Payments</p>
+            </div>
+            <p id="payment">@Math.Round(Model.Payment, 2).ToString("C")</p>
+            <div class="row">
+                <div class="col-6">
+                    <label class="text-left">Total Principal</label>
+                </div>
+                <div class="col-6 text-right" id="totalPrincipal">
+                    @Math.Round(Model.Amount, 2).ToString("C")
+                </div>
+
+                <div class="col-6">
+                    <label class="text-left">Total Interest</label>
+                </div>
+                <div class="col-6 text-right" id="totalInterest">
+                    @Math.Round(Model.TotalInterest).ToString("C")
+                </div>
+
+                <div class="col-6">
+                    <label class="text-left">Total Cost</label>
+                </div>
+                <div class="col-6 text-right" id="totalCost">
+                    @Math.Round(Model.TotalCost).ToString("C")
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 border">
+            @if (@Model.Payments.Count > 0)
+             {
+                <table id="scheduleTable" class="table table-striped table-hover">
+                <thead class="text-white" id="tableheader">
+                    <tr>
+                        <th>Month</th>
+                        <th>Payment</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Total Interest</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Payments)
+                     {
+                        <tr>
+                            <td>@Math.Round(Convert.ToDouble(item.LoanTerm), 2)</td>
+                            <td>@Math.Round(item.Payment, 2)</td>
+                            <td>@Math.Round(item.MonthlyPrincipal, 2)</td>
+                            <td>@Math.Round(item.MonthlyInterest, 2)</td>
+                            <td>@Math.Round(item.TotalInterest, 2)</td>
+                            <td>@Math.Round(item.Balance, 2)</td>
+                        </tr>
+                     }
+                </tbody>
+                </table>
+             }
+        </div>
+    </div>
+</div>
